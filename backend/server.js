@@ -24,17 +24,40 @@ app.post('/convert', async (req, res) => {
     const title = info.videoDetails.title;
     const output = path.resolve(__dirname, `${title}.mp3`);
 
-    const stream = ytdl(youtubeUrl, { format: 'mp4' });
+    // const stream = ytdl(youtubeUrl, { format: 'mp4' });
+    const stream = ytdl(youtubeUrl, {
+      quality: 'highestaudio',
+      filter: 'audioonly',
+    });
+
+    console.log('Stream download started');
+
+    stream.on('finish', () => {
+      console.log('Stream download finished');
+    });
+
+    console.log('Stream ffmpeg processing');
+
     ffmpeg(stream)
       .audioBitrate(128)
       .save(output)
       .on('end', () => {
-        // Existing code to handle successful conversion
+        console.log('Ffmpeg processing finished');
+        res.download(output, `${title}.mp3`, (err) => {
+          // Use the defined output path and filename
+          if (err) {
+            console.error('Error sending file:', err);
+            res.status(500).send('Error sending file');
+          } else {
+            console.log('File sent successfully');
+          }
+        });
       })
+
       .on('error', (err, stdout, stderr) => {
-        console.error('Error:', err);
-        console.error('ffmpeg stdout:', stdout);
-        console.error('ffmpeg stderr:', stderr);
+        console.error('Ffmpeg error:', err);
+        console.error('Ffmpeg stdout:', stdout);
+        console.error('Ffmpeg stderr:', stderr);
         res.status(500).send('Error in ffmpeg conversion');
       });
   } catch (error) {

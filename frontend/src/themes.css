@@ -1,0 +1,28 @@
+/* Dark Mode */
+body.dark-mode {
+    background-color: #282c34;
+    /* Dark background */
+    color: #FFFFFF;
+    /* White text */
+}
+
+/* Light Mode */
+body.light-mode {
+    background-color: #FFFFFF;
+    /* White background */
+    color: #000000;
+    /* Black text */
+}
+
+/* Common Styles */
+button {
+    border: none;
+    padding: 10px;
+    margin: 5px;
+    cursor: pointer;
+}
+
+input[type="text"] {
+    padding: 10px;
+    margin: 5px;
+}
