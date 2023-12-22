@@ -8,15 +8,22 @@ const YouTubeConverter = () => {
   const handleConvert = async () => {
     setLoading(true);
     try {
-      const response = await axios.post('http://localhost:3001/convert', {
-        youtubeUrl: url,
-      });
+      const response = await axios.post(
+        'http://localhost:3001/convert',
+        { youtubeUrl: url },
+        {
+          responseType: 'blob', // This ensures you get the file data as a blob
+        },
+      );
+
+      // Create a URL for the blob and initiate a download
+      const downloadUrl = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
-      link.href = response.data;
-      link.download = response.data.split('/').pop();
+      link.href = downloadUrl;
+      link.setAttribute('download', 'download.mp3'); // Set the file name for the download
       document.body.appendChild(link);
       link.click();
-      document.body.removeChild(link);
+      link.parentNode.removeChild(link);
       setLoading(false);
     } catch (error) {
       console.error('Error converting video:', error);
