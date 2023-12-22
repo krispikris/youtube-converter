@@ -2,6 +2,9 @@
 const express = require('express');
 const ytdl = require('ytdl-core');
 const ffmpeg = require('fluent-ffmpeg');
+const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
+ffmpeg.setFfmpegPath(ffmpegPath);
+
 const fs = require('fs');
 const path = require('path');
 const cors = require('cors');
@@ -26,9 +29,13 @@ app.post('/convert', async (req, res) => {
       .audioBitrate(128)
       .save(output)
       .on('end', () => {
-        res.download(output, `${title}.mp3`, () => {
-          fs.unlinkSync(output);
-        });
+        // Existing code to handle successful conversion
+      })
+      .on('error', (err, stdout, stderr) => {
+        console.error('Error:', err);
+        console.error('ffmpeg stdout:', stdout);
+        console.error('ffmpeg stderr:', stderr);
+        res.status(500).send('Error in ffmpeg conversion');
       });
   } catch (error) {
     console.error(error);
