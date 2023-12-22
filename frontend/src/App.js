@@ -1,7 +1,8 @@
 import logo from './logo.svg';
 import './App.css';
+import YouTubeConverter from './components/YoutubeConverter.js';
 
-function App() {
+const App = () => {
   return (
     <div className="App">
       <header className="App-header">
@@ -18,8 +19,9 @@ function App() {
           Learn React
         </a>
       </header>
+      <YouTubeConverter />
     </div>
   );
-}
+};
 
 export default App;

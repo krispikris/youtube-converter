@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-const YoutubeToMp3 = () => {
+const YouTubeConverter = () => {
   const [url, setUrl] = useState('');
   const [isLoading, setLoading] = useState(false);
 
@@ -40,4 +40,4 @@ const YoutubeToMp3 = () => {
   );
 };
 
-export default YoutubeToMp3;
+export default YouTubeConverter;
