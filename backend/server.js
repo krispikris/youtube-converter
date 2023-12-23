@@ -43,8 +43,15 @@ app.post('/convert', async (req, res) => {
       .save(output)
       .on('end', () => {
         console.log('Ffmpeg processing finished');
-        res.download(output, `${title}.mp3`, (err) => {
-          // Use the defined output path and filename
+        const formattedFileName = `${title}.mp3`
+          .replace(/[^a-z0-9]/gi, '_')
+          .toLowerCase(); // Format file name
+
+        res.setHeader(
+          'Content-Disposition',
+          `attachment; filename="${formattedFileName}"`,
+        );
+        res.download(output, formattedFileName, (err) => {
           if (err) {
             console.error('Error sending file:', err);
             res.status(500).send('Error sending file');
@@ -53,6 +60,19 @@ app.post('/convert', async (req, res) => {
           }
         });
       })
+
+      // .on('end', () => {
+      //   console.log('Ffmpeg processing finished');
+      //   res.download(output, `${title}.mp3`, (err) => {
+      //     // Use the defined output path and filename
+      //     if (err) {
+      //       console.error('Error sending file:', err);
+      //       res.status(500).send('Error sending file');
+      //     } else {
+      //       console.log('File sent successfully');
+      //     }
+      //   });
+      // })
 
       .on('error', (err, stdout, stderr) => {
         console.error('Ffmpeg error:', err);

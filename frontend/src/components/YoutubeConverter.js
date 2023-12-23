@@ -16,11 +16,23 @@ const YouTubeConverter = () => {
         },
       );
 
+      // Extract filename from Content-Disposition header
+      const contentDisposition = response.headers['content-disposition'];
+      console.log('contentDisposition:', contentDisposition);
+      let filename = 'download.mp3'; // Default filename
+
+      if (contentDisposition) {
+        const matches = /filename="([^"]+)"/.exec(contentDisposition);
+        if (matches != null && matches[1]) {
+          filename = matches[1].replace(/['"]/g, '');
+        }
+      }
+
       // Create a URL for the blob and initiate a download
       const downloadUrl = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = downloadUrl;
-      link.setAttribute('download', 'download.mp3'); // Set the file name for the download
+      link.setAttribute('download', filename); // Set the file name for the download
       document.body.appendChild(link);
       link.click();
       link.parentNode.removeChild(link);
